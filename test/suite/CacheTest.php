@@ -2,20 +2,19 @@
 
 namespace Minime\Annotations;
 
-use Mockery;
-
-use Minime\Annotations\Interfaces\CacheInterface;
-use Minime\Annotations\Cache\FileCache;
-use Minime\Annotations\Cache\ArrayCache;
 use Minime\Annotations\Cache\ApcCache;
-use Minime\Annotations\Fixtures\AnnotationsFixture;
+use Minime\Annotations\Cache\ArrayCache;
+use Minime\Annotations\Cache\FileCache;
+use Minime\Annotations\Interfaces\CacheInterface;
+use Mockery;
+use PHPUnit\Framework\TestCase;
 
-class CacheTest extends \PHPUnit_Framework_TestCase
+class CacheTest extends TestCase
 {
 
     protected $fixtureClass = 'Minime\Annotations\Fixtures\AnnotationsFixture';
 
-    public function tearDown()
+    public function tearDown(): void
     {
         Mockery::close();
     }
@@ -54,14 +53,12 @@ class CacheTest extends \PHPUnit_Framework_TestCase
     }
 
     public function testFileCacheWithDefaultStoragePath(){
+        $this->expectNotToPerformAssertions();
         new FileCache();
     }
 
-    /**
-     * @expectedException \InvalidArgumentException
-     * @expectedExceptionMessageRegExp #^Cache path is not a writable/readable directory: .+\.#
-     */
     public function testFileCacheWithBadStoragePath(){
+        $this->expectExceptionMessage("Cache path is not a writable/readable directory");
         new FileCache(__DIR__ . '/invalid/path/');
     }
 

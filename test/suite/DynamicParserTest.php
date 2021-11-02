@@ -9,7 +9,7 @@ namespace Minime\Annotations;
  */
 class DynamicParserTest extends BaseTest
 {
-    public function setUp()
+    public function setUp(): void
     {
         parent::setup();
         $this->parser = new DynamicParser;
@@ -141,6 +141,11 @@ class DynamicParserTest extends BaseTest
         $this->assertArrayNotHasKey('undefined', $annotations);
     }
 
+    protected function normalizeLineEndings(string $input): string
+    {
+        return preg_replace('~\R~u', "\r\n", $input);
+    }
+
     /**
      * @test
      */
@@ -151,12 +156,18 @@ class DynamicParserTest extends BaseTest
                   ."Etiam malesuada mauris justo, at sodales nisi accumsan sit amet.\n\n"
                   ."Morbi imperdiet lacus non purus suscipit convallis.\n"
                   ."Suspendisse egestas orci a felis imperdiet, non consectetur est suscipit.";
-        $this->assertSame($string, $annotations['multiline_string']);
+        $this->assertSame(
+            $this->normalizeLineEndings($string),
+            $this->normalizeLineEndings($annotations['multiline_string'])
+        );
 
         $cowsay = "------\n< moo >\n------ \n        \   ^__^\n         ".
                   "\  (oo)\_______\n            (__)\       )\/\\\n                ".
                   "||----w |\n                ||     ||";
-        $this->assertSame($cowsay, $annotations['multiline_indented_string']);
+        $this->assertSame(
+            $this->normalizeLineEndings($cowsay),
+            $this->normalizeLineEndings($annotations['multiline_indented_string'])
+        );
     }
 
     /**
